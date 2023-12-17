@@ -1,4 +1,5 @@
 export interface RPCParserErr {
+  severity: string;
   error: string;
   scopes: string[];
   line: number;
@@ -18,11 +19,16 @@ export interface RPCResponse<T> {
   id: number;
 }
 
-export interface RPCValidationResponse {
+export interface RPCValidationMessage {
   Ok?: true;
   ParserErr?: RPCParserErr;
   ValidationErr?: RPCValidationErr;
   UnknownError?: RPCUnknownError;
+}
+
+export interface RPCValidationResponse {
+  IsOk: true;
+  Messages?: RPCValidationMessage[];
 }
 
 export interface RPCGetFileTreeResponse {
@@ -46,6 +52,7 @@ export interface RPCValidateFileRequest extends RPCRequest {
   method: "validate_file";
   params: {
     path: string;
+    shadingLanguage: string;
   };
 }
 
@@ -53,5 +60,6 @@ export interface RPCGetFileTreeRequest extends RPCRequest {
   method: "get_file_tree";
   params: {
     path: string;
+    shadingLanguage: string;
   };
 }

@@ -24,7 +24,7 @@ export class Validator {
     this.callbacks = {};
 
     this.server.stdout.on("data", (data: string) => {
-      const msgs = data.split("\n").filter((msg) => msg.length != 0);
+      const msgs = data.split("\n").filter((msg) => msg.length !== 0);
 
       msgs.forEach((msgString) => {
         try {
@@ -57,7 +57,7 @@ export class Validator {
 
   versionCheck() {
     this.callbacks[this.currId] = (res: any) => {
-      if (res.result != "0.0.1") {
+      if (res.result !== "0.0.1") {
         vscode.window.showErrorMessage(
           `It looks like your cargo-wgsl is outdated. Please run "cargo install cargo-wgsl"`
         );
@@ -78,9 +78,10 @@ export class Validator {
 
   getFileTree(
     document: vscode.TextDocument,
+    shadingLanguage: string,
     cb: (data: RPCResponse<RPCGetFileTreeResponse | null> | null) => void
   ) {
-    if (document.uri.scheme == "file") {
+    if (document.uri.scheme === "file") {
       this.callbacks[this.currId] = cb;
 
       console.log(document.uri.fsPath);
@@ -90,6 +91,7 @@ export class Validator {
         method: "get_file_tree",
         params: {
           path: document.uri.fsPath,
+          shadingLanguage: shadingLanguage
         },
         id: this.currId,
       };
@@ -102,9 +104,10 @@ export class Validator {
 
   validateFile(
     document: vscode.TextDocument,
+    shadingLanguage: string,
     cb: (data: RPCResponse<RPCValidationResponse> | null) => void
   ) {
-    if (document.uri.scheme == "file") {
+    if (document.uri.scheme === "file") {
       this.callbacks[this.currId] = cb;
 
       const req: RPCValidateFileRequest = {
@@ -112,6 +115,7 @@ export class Validator {
         method: "validate_file",
         params: {
           path: document.uri.fsPath,
+          shadingLanguage: shadingLanguage
         },
         id: this.currId,
       };
